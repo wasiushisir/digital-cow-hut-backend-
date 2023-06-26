@@ -9,18 +9,8 @@ import { sendResponse } from "../../../shared/sendResponse";
 export const createUserFromDb: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const { ...dataResult } = req.body;
-    // console.log(dataResult);
 
     const result = await createUser(dataResult);
-
-    // return res.status(200).json({ result });
-
-    // sendResponse<IUser>(res, {
-    //   statusCode: status.OK,
-    //   success: true,
-    //   message: "user created successfully!",
-    //   data: result,
-    // });
 
     sendResponse<IUser>(res, {
       statusCode: status.OK,
@@ -34,8 +24,6 @@ export const createUserFromDb: RequestHandler = catchAsync(
 export const getAllUsersFromDb = catchAsync(
   async (req: Request, res: Response) => {
     const result = await getAllUser();
-
-    // res.status(200).json({ result });
 
     sendResponse<IUser[]>(res, {
       statusCode: status.OK,
