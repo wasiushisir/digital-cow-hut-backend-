@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import { CowModel, ICow } from "./cow.interface";
 import { cowBreed, cowCategory, cowLabel, cowLocation } from "./cow.constant";
 
-const cowSchema = new Schema<ICow, CowModel>({
+export const cowSchema = new Schema<ICow, CowModel>({
   name: {
     type: String,
     required: true,
@@ -50,5 +50,12 @@ const cowSchema = new Schema<ICow, CowModel>({
     required: true,
   },
 });
+
+// cowSchema.pre('save', async function (next) {
+//   console.log('Before saving:', this.price);
+
+// })
+
+// console.log(document.price)
 
 export const Cow = model<ICow, CowModel>("Cow", cowSchema);
