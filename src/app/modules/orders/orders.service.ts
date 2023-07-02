@@ -35,7 +35,7 @@ export const createOrder = async (data: IOrder): Promise<IOrder> => {
 
   try {
     const options = { session };
-    const updatedUser = await User.findOneAndUpdate(
+    const updatedBuyer = await User.findOneAndUpdate(
       { _id: buyer }, // filter criteria
       { budget: deductedBudget }, // data to update
       { new: true, ...options } // options: { new: true } returns the updated document
@@ -43,6 +43,11 @@ export const createOrder = async (data: IOrder): Promise<IOrder> => {
     const updatedSeller = await User.findOneAndUpdate(
       { _id: specificSeller }, // filter criteria
       { income: specificSellerIncome }, // data to update
+      { new: true, ...options } // options: { new: true } returns the updated document
+    );
+    const updatedCow = await Cow.findOneAndUpdate(
+      { _id: cow }, // filter criteria
+      { label: "sold out" }, // data to update
       { new: true, ...options } // options: { new: true } returns the updated document
     );
 
