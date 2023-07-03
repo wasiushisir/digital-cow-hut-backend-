@@ -1,3 +1,4 @@
+import { SortOrder } from "mongoose";
 // import { IGenericResponse } from './../../../interface/common';
 import { ICow } from "./cow.interface";
 // import { paginatedOption } from './../../../interface/pagination';
@@ -9,7 +10,7 @@ import {
 } from "../../../../src/interface/pagination";
 import { paginationHelpers } from "../../../helpers/paginationHelpers";
 // import { IGenericResponse } from "../../../interface/common";
-import { SortOrder } from "mongoose";
+// import { SortOrder } from "mongoose";
 import { IGenericResponse } from "../../../interface/common";
 import { cowFilterableFields } from "./cow.constant";
 // import { IGenericResponse} from '../../../interface/common';
@@ -25,9 +26,6 @@ export const getCow = async (
   filters: CowFilters
 ): Promise<IGenericResponse<ICow[]>> => {
   const { searchTerm, minPrice, maxPrice, ...filtersData } = filters;
-
-  const cows = await Cow.find({ price: { $lte: minPrice } });
-  console.log(minPrice, "get all cow", cows);
 
   const andConditions = [];
 
@@ -56,16 +54,16 @@ export const getCow = async (
     });
   }
 
-  const { page, limit, skip, sortBy, sortOrder } =
-    paginationHelpers(paginationOption);
+  const { page, limit, skip } = paginationHelpers(paginationOption);
+
+  const { sortBy, sortOrder } = paginationOption;
   const sortConditions: { [key: string]: SortOrder } = {};
-  console.log(sortBy);
-  console.log(sortOrder);
+  console.log(sortBy, "jj");
+  console.log(sortOrder, "jj");
   if (sortBy && sortOrder) {
     sortConditions[sortBy] = sortOrder;
   }
-  // console.log(sortConditions);
-  console.log(andConditions, "vv");
+
   const whereConditions =
     andConditions.length > 0 ? { $and: andConditions } : {};
 
@@ -77,8 +75,6 @@ export const getCow = async (
     .skip(skip)
     .limit(limit);
 
-  // console.log(result);
-
   const total = await Cow.countDocuments();
   return {
     meta: {
@@ -88,4 +84,24 @@ export const getCow = async (
     },
     data: result,
   };
+};
+
+export const getSingleCow = async (id: string): Promise<ICow | null> => {
+  const result = await Cow.findById(id).populate("seller");
+  return result;
+};
+
+export const updateCow = async (
+  id: string,
+  payload: Partial<ICow>
+): Promise<ICow | null> => {
+  const result = await Cow.findByIdAndUpdate({ _id: id }, payload, {
+    new: true,
+  }).populate("seller");
+  return result;
+};
+
+export const deleteCow = async (id: string): Promise<ICow | null> => {
+  const result = await Cow.findByIdAndDelete(id);
+  return result;
 };

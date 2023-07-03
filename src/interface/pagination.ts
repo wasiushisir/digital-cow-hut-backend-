@@ -1,8 +1,10 @@
+import { SortOrder } from "mongoose";
+
 export type paginatedOptions = {
   page?: number;
   limit?: number;
   sortBy?: string;
-  sortOrder?: "asc" | "desc";
+  sortOrder?: SortOrder;
 };
 
 export type Ifilters = {

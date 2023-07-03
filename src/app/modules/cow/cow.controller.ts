@@ -2,7 +2,7 @@ import { SortOrder } from "mongoose";
 // import { paginatedOption } from "./../../../interface/pagination";
 import { Request, Response } from "express";
 import catchAsync from "../../../shared/catchAsync";
-import { createCow } from "./cow.service";
+import { createCow, deleteCow, getSingleCow, updateCow } from "./cow.service";
 import { sendResponse } from "../../../shared/sendResponse";
 import { ICow } from "./cow.interface";
 import status from "http-status";
@@ -28,38 +28,25 @@ export const createCowFromDb = catchAsync(
 );
 
 export const getCowFromDb = catchAsync(async (req: Request, res: Response) => {
-  // const paginatedOption = {
-  //   ...req.query,
-  //   // page: req.query.page,
-  //   // limit: req.query.limit,
-  //   // sortBy: req.query.sortBy,
-  //   // sortOrder: req.query.sortOrder,
-  // };
+  type Org = { [key: string]: string };
 
-  // const filters = {
-  //   ...req.query,
-  //   // searchTerm: req.query.searchTerm,
-  //   // minPrice: req.query.minPrice,
-  //   // maxPrice: req.query.maxPrice,
-  //   // location: req.query?.location,
-  // };
-  const queries = {};
+  const queries: Org = {};
 
   if (req.query.limit) {
-    const limit = req.query.limit;
+    const limit = req.query.limit as string;
     queries.limit = limit;
   }
   if (req.query.page) {
-    const page = req.query.page;
+    const page = req.query.page as string;
     queries.page = page;
   }
   if (req.query.sortBy) {
-    const sortBy = req.query.sortBy;
+    const sortBy = req.query.sortBy as string;
     queries.sortBy = sortBy;
   }
   if (req.query.sortOrder) {
-    const sortOrder = req.query.sortOrder;
-    queries.SortOrder = sortOrder;
+    const sortOrder = req.query.sortOrder as string;
+    queries.sortOrder = sortOrder;
   }
 
   // const paginatedOption = pick(req.query, paginationFields);
@@ -77,3 +64,50 @@ export const getCowFromDb = catchAsync(async (req: Request, res: Response) => {
     data: result.data,
   });
 });
+
+export const getSingleCowFromDb = catchAsync(
+  async (req: Request, res: Response) => {
+    const id = req.params.id;
+    // console.log(id);
+
+    const result = await getSingleCow(id);
+
+    sendResponse<ICow>(res, {
+      statusCode: status.OK,
+      success: true,
+      message: "single cow retrived successfully",
+
+      data: result,
+    });
+  }
+);
+
+export const updateCowFromDb = catchAsync(
+  async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const updatedData = req.body;
+
+    const result = await updateCow(id, updatedData);
+
+    sendResponse<ICow>(res, {
+      statusCode: status.OK,
+      success: true,
+      message: "Cow updated successfully !",
+      data: result,
+    });
+  }
+);
+
+export const deleteCowFromDb = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await deleteCow(id);
+
+    sendResponse<ICow>(res, {
+      statusCode: status.OK,
+      success: true,
+      message: "Cow deleted successfully",
+      data: result,
+    });
+  }
+);
