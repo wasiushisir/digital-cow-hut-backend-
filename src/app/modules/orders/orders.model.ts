@@ -10,6 +10,7 @@ const orderSchema = new Schema<IOrder, OrderModel>({
     type: Schema.Types.ObjectId,
     ref: "Cow",
     required: true,
+    unique: true,
   },
   buyer: {
     type: Schema.Types.ObjectId,
