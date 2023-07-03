@@ -4,6 +4,7 @@ import { IOrder } from "./orders.interface";
 import { Order } from "./orders.model";
 import { User } from "../user/user.model";
 import { Cow } from "../cow/cow.model";
+import { Request, Response } from "express";
 
 export const createOrder = async (data: IOrder): Promise<IOrder> => {
   const { cow, buyer } = data;
@@ -60,5 +61,10 @@ export const createOrder = async (data: IOrder): Promise<IOrder> => {
   }
   const result = await Order.create(data);
 
+  return result;
+};
+
+export const getOrders = async (): Promise<IOrder[]> => {
+  const result = await Order.find({});
   return result;
 };
