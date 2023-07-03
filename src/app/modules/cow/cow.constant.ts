@@ -40,6 +40,7 @@ export const cowLabel: ICowLabel[] = ["for sale", "sold out"];
 export const cowFilterableFields = [
   "searchTerm",
   "minPrice",
+  "maxPrice",
   "location",
   "breed",
   "category",

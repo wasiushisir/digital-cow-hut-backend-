@@ -24,18 +24,12 @@ export const getCow = async (
   paginationOption: paginatedOptions,
   filters: CowFilters
 ): Promise<IGenericResponse<ICow[]>> => {
-  const { searchTerm, minPrice, ...filtersData } = filters;
+  const { searchTerm, minPrice, maxPrice, ...filtersData } = filters;
 
   const cows = await Cow.find({ price: { $lte: minPrice } });
   console.log(minPrice, "get all cow", cows);
 
   const andConditions = [];
-  // andConditions.push(cows);
-
-  // console.log(searchTerm);
-  // console.log(paginationOption, "bx");
-
-  // andConditions.push(...cows)
 
   if (searchTerm) {
     andConditions.push({
@@ -46,6 +40,13 @@ export const getCow = async (
         },
       })),
     });
+  }
+
+  if (minPrice) {
+    andConditions.push({ price: { $lte: minPrice } });
+  }
+  if (maxPrice) {
+    andConditions.push({ price: { $gte: maxPrice } });
   }
 
   if (Object.keys(filtersData).length) {

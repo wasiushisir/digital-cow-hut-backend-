@@ -41,4 +41,5 @@ export type CowModel = Model<ICow>;
 export type CowFilters = {
   searchTerm?: string;
   minPrice?: number;
+  maxPrice?: number;
 };
