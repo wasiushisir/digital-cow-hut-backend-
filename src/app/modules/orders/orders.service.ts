@@ -6,7 +6,7 @@ import { User } from "../user/user.model";
 import { Cow } from "../cow/cow.model";
 import { Request, Response } from "express";
 
-export const createOrder = async (data: IOrder): Promise<IOrder> => {
+export const createOrder = async (data: IOrder): Promise<IOrder | null> => {
   const { cow, buyer } = data;
   // console.log(cow, buyer);
 
@@ -59,12 +59,42 @@ export const createOrder = async (data: IOrder): Promise<IOrder> => {
     await session.endSession();
     throw error;
   }
-  const result = await Order.create(data);
+  // const result = (await Order.create(data))
+  //   .populate({
+  //     path: "cow",
+  //     populate: [
+  //       {
+  //         path: "seller",
+  //       },
+  //     ],
+  //   })
+  //   .populate("buyer");
 
-  return result;
+  const result = await Order.create(data);
+  const populatedOrder = await Order.findById(result?._id)
+    .populate({
+      path: "cow",
+      populate: {
+        path: "seller",
+      },
+    })
+    .populate("buyer");
+
+  return populatedOrder;
 };
 
 export const getOrders = async (): Promise<IOrder[]> => {
-  const result = await Order.find({});
+  const result = await Order.find({})
+    .populate({
+      path: "cow",
+      populate: [
+        {
+          path: "seller",
+        },
+      ],
+    })
+
+    .populate("buyer");
+
   return result;
 };
