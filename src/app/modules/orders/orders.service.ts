@@ -59,16 +59,6 @@ export const createOrder = async (data: IOrder): Promise<IOrder | null> => {
     await session.endSession();
     throw error;
   }
-  // const result = (await Order.create(data))
-  //   .populate({
-  //     path: "cow",
-  //     populate: [
-  //       {
-  //         path: "seller",
-  //       },
-  //     ],
-  //   })
-  //   .populate("buyer");
 
   const result = await Order.create(data);
   const populatedOrder = await Order.findById(result?._id)

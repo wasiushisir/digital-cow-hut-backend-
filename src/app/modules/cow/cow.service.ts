@@ -72,6 +72,7 @@ export const getCow = async (
   console.log(whereConditions);
 
   const result = await Cow.find(whereConditions)
+    .populate("seller")
     .sort(sortConditions)
     .skip(skip)
     .limit(limit);
