@@ -42,11 +42,10 @@ export const getCow = async (
     });
   }
 
-  if (minPrice) {
-    andConditions.push({ price: { $lte: minPrice } });
-  }
-  if (maxPrice) {
-    andConditions.push({ price: { $gte: maxPrice } });
+  if (minPrice || maxPrice) {
+    andConditions.push({
+      $or: [{ price: { $lte: minPrice } }, { price: { $gte: maxPrice } }],
+    });
   }
 
   if (Object.keys(filtersData).length) {
@@ -57,15 +56,6 @@ export const getCow = async (
     });
   }
 
-  // const andConditions = [
-  //   {
-  //     $or: [
-  //       { title: { $regex: searchTerm, $options: 'i' } },
-  //       { code: { $regex: searchTerm, $options: 'i' } },
-  //       { year: { $regex: searchTerm, $options: 'i' } },
-  //     ],
-  //   },
-  // ]
   const { page, limit, skip, sortBy, sortOrder } =
     paginationHelpers(paginationOption);
   const sortConditions: { [key: string]: SortOrder } = {};
