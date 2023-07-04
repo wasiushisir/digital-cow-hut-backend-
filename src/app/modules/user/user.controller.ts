@@ -52,3 +52,17 @@ export const getSingleUserFromDb = catchAsync(
     });
   }
 );
+
+export const deleteCowFromDb = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await deleteCow(id);
+
+    sendResponse<IUser>(res, {
+      statusCode: status.OK,
+      success: true,
+      message: "User deleted successfully",
+      data: result,
+    });
+  }
+);
