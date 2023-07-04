@@ -12,7 +12,7 @@ export const cowSchema = new Schema<ICow, CowModel>({
     required: true,
   },
   price: {
-    type: String,
+    type: Number,
     required: true,
   },
 

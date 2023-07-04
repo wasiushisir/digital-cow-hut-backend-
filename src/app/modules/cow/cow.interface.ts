@@ -27,7 +27,7 @@ export type ICowLabel = "for sale" | "sold out";
 export type ICow = {
   name: string;
   age: string;
-  price: string;
+  price: number;
   location: ICowLocation;
   breed: ICowBreed;
   weight: string;

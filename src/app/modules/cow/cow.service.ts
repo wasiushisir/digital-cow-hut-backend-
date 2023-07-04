@@ -27,6 +27,8 @@ export const getCow = async (
 ): Promise<IGenericResponse<ICow[]>> => {
   const { searchTerm, minPrice, maxPrice, ...filtersData } = filters;
 
+  console.log(Number(maxPrice));
+
   const andConditions = [];
 
   if (searchTerm) {
@@ -40,9 +42,19 @@ export const getCow = async (
     });
   }
 
-  if (minPrice || maxPrice) {
+  if (minPrice && maxPrice) {
     andConditions.push({
-      $or: [{ price: { $lte: minPrice } }, { price: { $gte: maxPrice } }],
+      $and: [{ price: { $gte: minPrice } }, { price: { $lte: maxPrice } }],
+    });
+  }
+  if (minPrice) {
+    andConditions.push({
+      price: { $gte: minPrice },
+    });
+  }
+  if (maxPrice) {
+    andConditions.push({
+      price: { $lte: maxPrice },
     });
   }
 
