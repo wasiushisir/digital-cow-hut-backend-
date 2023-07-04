@@ -53,7 +53,7 @@ export const getCowFromDb = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, cowFilterableFields);
 
   const result = await getCow(queries, filters);
-  console.log(filters);
+  // console.log(result, "vivi");
 
   sendResponse<ICow[]>(res, {
     statusCode: status.OK,
@@ -71,6 +71,8 @@ export const getSingleCowFromDb = catchAsync(
     // console.log(id);
 
     const result = await getSingleCow(id);
+
+    // console.log(result, "kiki_2");
 
     sendResponse<ICow>(res, {
       statusCode: status.OK,
