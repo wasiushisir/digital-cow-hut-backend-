@@ -6,8 +6,11 @@ app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 import routes from "./app/routes/index";
+import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 
 app.use("/api/v1/", routes);
+
+app.use(globalErrorHandler);
 
 // app.get("/", async (req: Request, res: Response, next: NextFunction) => {
 //   // Promise.reject(new Error('unhandled promise rejection'))
