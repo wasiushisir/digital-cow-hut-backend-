@@ -1,7 +1,12 @@
 import { Request, Response, RequestHandler } from "express";
 import catchAsync from "../../../shared/catchAsync";
 import status from "http-status";
-import { deleteUser, getAllUser, getSingleUser } from "../user/user.service";
+import {
+  deleteUser,
+  getAllUser,
+  getSingleUser,
+  updateStudent,
+} from "../user/user.service";
 import { IUser } from "./user.interface";
 import { createUser } from "./user.service";
 import { sendResponse } from "../../../shared/sendResponse";
@@ -52,6 +57,20 @@ export const getSingleUserFromDb = catchAsync(
     });
   }
 );
+
+const updateStudentFromDb = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const updatedData = req.body;
+
+  const result = await updateStudent(id, updatedData);
+
+  sendResponse<IUser>(res, {
+    statusCode: status.OK,
+    success: true,
+    message: "User updated successfully !",
+    data: result,
+  });
+});
 
 export const deleteUserFromDb = catchAsync(
   async (req: Request, res: Response) => {
