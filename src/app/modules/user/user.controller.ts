@@ -5,7 +5,7 @@ import {
   deleteUser,
   getAllUser,
   getSingleUser,
-  updateStudent,
+  updateUser,
 } from "../user/user.service";
 import { IUser } from "./user.interface";
 import { createUser } from "./user.service";
@@ -58,19 +58,21 @@ export const getSingleUserFromDb = catchAsync(
   }
 );
 
-const updateStudentFromDb = catchAsync(async (req: Request, res: Response) => {
-  const id = req.params.id;
-  const updatedData = req.body;
+export const updateUserFromDb = catchAsync(
+  async (req: Request, res: Response) => {
+    const id = req.params.id;
+    const updatedData = req.body;
 
-  const result = await updateStudent(id, updatedData);
+    const result = await updateUser(id, updatedData);
 
-  sendResponse<IUser>(res, {
-    statusCode: status.OK,
-    success: true,
-    message: "User updated successfully !",
-    data: result,
-  });
-});
+    sendResponse<IUser>(res, {
+      statusCode: status.OK,
+      success: true,
+      message: "User updated successfully !",
+      data: result,
+    });
+  }
+);
 
 export const deleteUserFromDb = catchAsync(
   async (req: Request, res: Response) => {

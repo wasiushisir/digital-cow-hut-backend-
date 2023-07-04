@@ -23,13 +23,19 @@ export const getSingleUser = async (id: string): Promise<IUser | null> => {
   return result;
 };
 
-export const updateStudent = async (
+export const updateUser = async (
   id: string,
   payload: Partial<IUser>
 ): Promise<IUser | null> => {
   const { name, ...userData } = payload;
 
+  // console.log(name, "name");
+
+  // console.log(userData);
+
   const updatedUserData: Partial<IUser> = { ...userData };
+
+  // console.log(updatedUserData);
 
   if (name && Object.keys(name).length > 0) {
     Object.keys(name).forEach((key) => {
@@ -38,9 +44,11 @@ export const updateStudent = async (
     });
   }
 
-  const result = await User.findOneAndUpdate({ id }, updatedUserData, {
+  const result = await User.findOneAndUpdate({ _id: id }, updatedUserData, {
     new: true,
   });
+
+  // console.log(result);
   return result;
 };
 
