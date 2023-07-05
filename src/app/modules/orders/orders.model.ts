@@ -19,17 +19,18 @@ const orderSchema = new Schema<IOrder, OrderModel>({
   },
 });
 
-orderSchema.pre("save", async function (next) {
-  const price = await Cow.findOne(this.cow);
-  const budget = await User.findOne(this.buyer);
-  const toPrice = Number(price?.price);
-  const toBudget = Number(budget?.budget);
+// orderSchema.pre("save", async function (next) {
+//   const price = await Cow.findOne(this.cow);
+//   const budget = await User.findOne(this.buyer);
+//   const toPrice = Number(price?.price);
+//   const toBudget = Number(budget?.budget);
+//   console.log(toPrice, toBudget, "from pre");
 
-  if (toPrice >= toBudget) {
-    throw new ApiError(status.CONFLICT, "need ore price to buy this cow");
-  }
+//   if (toPrice > toBudget) {
+//     throw new ApiError(status.CONFLICT, "need more money to buy this cow");
+//   }
 
-  next();
-});
+//   next();
+// });
 
 export const Order = model<IOrder, OrderModel>("Order", orderSchema);

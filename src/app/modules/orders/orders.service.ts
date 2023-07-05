@@ -5,10 +5,15 @@ import { Order } from "./orders.model";
 import { User } from "../user/user.model";
 import { Cow } from "../cow/cow.model";
 import { Request, Response } from "express";
+import ApiError from "../../../errors/ApiError";
+import status from "http-status";
 
 export const createOrder = async (data: IOrder): Promise<IOrder | null> => {
   const { cow, buyer } = data;
-  // console.log(cow, buyer);
+  console.log(cow);
+
+  const isExist = await Order.find({ cow: cow });
+  console.log(isExist);
 
   const budget = await User.findOne({ _id: buyer });
   const toBudget = budget?.budget;
@@ -31,33 +36,46 @@ export const createOrder = async (data: IOrder): Promise<IOrder | null> => {
 
   // console.log(specificSeller?.name);
 
+  const checkBudget = Number(toBudget);
+
   const session = await mongoose.startSession();
   session.startTransaction();
 
-  try {
-    const options = { session };
-    const updatedBuyer = await User.findOneAndUpdate(
-      { _id: buyer }, // filter criteria
-      { budget: deductedBudget }, // data to update
-      { new: true, ...options } // options: { new: true } returns the updated document
-    );
-    const updatedSeller = await User.findOneAndUpdate(
-      { _id: specificSeller }, // filter criteria
-      { income: specificSellerIncome }, // data to update
-      { new: true, ...options } // options: { new: true } returns the updated document
-    );
-    const updatedCow = await Cow.findOneAndUpdate(
-      { _id: cow }, // filter criteria
-      { label: "sold out" }, // data to update
-      { new: true, ...options } // options: { new: true } returns the updated document
-    );
+  if (checkBudget >= Number(toPrice) && isExist.length === 0) {
+    console.log(checkBudget, toPrice, "from service");
 
-    await session.commitTransaction();
-    await session.endSession();
-  } catch (error) {
-    await session.abortTransaction();
-    await session.endSession();
-    throw error;
+    try {
+      const options = { session };
+      const updatedBuyer = await User.findOneAndUpdate(
+        { _id: buyer }, // filter criteria
+        { budget: deductedBudget }, // data to update
+        { new: true, ...options } // options: { new: true } returns the updated document
+      );
+      const updatedSeller = await User.findOneAndUpdate(
+        { _id: specificSeller }, // filter criteria
+        { income: specificSellerIncome }, // data to update
+        { new: true, ...options } // options: { new: true } returns the updated document
+      );
+      const updatedCow = await Cow.findOneAndUpdate(
+        { _id: cow }, // filter criteria
+        { label: "sold out" }, // data to update
+        { new: true, ...options } // options: { new: true } returns the updated document
+      );
+
+      await session.commitTransaction();
+      await session.endSession();
+    } catch (error) {
+      await session.abortTransaction();
+      await session.endSession();
+      throw error;
+    }
+  } else if (checkBudget < Number(toPrice)) {
+    throw new ApiError(status.CONFLICT, "need more money to buy this cow");
+  } else {
+    throw new ApiError(
+      status.CONFLICT,
+      "You have to buy only one cow, the same cow would not be sold agin again"
+    );
   }
 
   const result = await Order.create(data);

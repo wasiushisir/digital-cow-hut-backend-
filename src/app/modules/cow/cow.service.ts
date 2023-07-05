@@ -70,8 +70,8 @@ export const getCow = async (
 
   const { sortBy, sortOrder } = paginationOption;
   const sortConditions: { [key: string]: SortOrder } = {};
-  console.log(sortBy, "jj");
-  console.log(sortOrder, "jj");
+  // console.log(sortBy, "jj");
+  // console.log(sortOrder, "jj");
   if (sortBy && sortOrder) {
     sortConditions[sortBy] = sortOrder;
   }
